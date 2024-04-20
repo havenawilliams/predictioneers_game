@@ -1,0 +1,14 @@
+name,position,capabilities,salience,resolve,true_hawk_type,true_retaliatory_type
+Bosnia,0.01,0.0018,0.05,1,1,1
+Serbia,0.01,0.0048,0.07,1,1,1
+Moldova,0.5,0.0012,0.15,1,1,1
+Finland,0.1,0.0279,0.1,1,1,1
+"UKR, Kiev",0.2,0.0398,0.92,1,1,1
+"UKR, Western Ukraine less Kiev",0.15,0.0199,0.92,1,1,1
+"UKR, Eastern Ukraine",0.55,0.0133,0.7,1,1,1
+"NATO, sans USA",0.15,1.1826,0.21,1,1,1
+"NATO, the United States",0.15,0.8612,0.25,1,1,1
+Sweden,0.4,0.0361,0.1,1,1,1
+"Russia, Vladimir Putin",1,0.1087,0.8,1,1,1
+"Russia, elites",0.8,0.1,0.7,1,1,1
+"Russia, general public",0.8,0.2,0.4,1,1,1
