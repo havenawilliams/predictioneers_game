@@ -1,0 +1,37 @@
+Metadata-Version: 2.1
+Name: pygambit
+Version: 16.2.0
+Summary: The package for computation in game theory
+Home-page: http://www.gambit-project.org
+Author: Theodore Turocy
+Author-email: ted.turocy@gmail.com
+License: GPL2+
+Project-URL: Documentation, https://gambitproject.readthedocs.io/
+Project-URL: Source, https://github.com/gambitproject/gambit
+Project-URL: Tracker, https://github.com/gambitproject/gambit/issues
+Keywords: game theory Nash equilibrium
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Requires-Python: >=3.8
+License-File: license.rtf
+License-File: COPYING
+License-File: AUTHORS
+Requires-Dist: lxml
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: deprecated
+
+Gambit is a package for representing, manuipulating, and analysing
+finite noncooperative games in extensive and normal form.
+
+See the project homepage at www.gambit-project.org for more information.
+
+Documentation of Gambit is hosted at https://gambitproject.readthedocs.io.
