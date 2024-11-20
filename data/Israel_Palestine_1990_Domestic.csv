@@ -1,0 +1,12 @@
+name,position,capabilities,salience,resolve
+Israeli_Defense_DEF,60,100,80,1
+Israeli_Settlers_SET,100,100,100,1
+Shamir_SHA,87.5,85,85,1
+Hard_Line_Likhud_HLIK,87.5,85,90,1
+Peace_Camp_PEA,20,70,85,1
+Labor_LAB,30,60,75,1
+Liberal_Likhud,70,60,50,1
+PLO_executive_committee,20,100,95,1
+Palestinians_in_occupied_territories_OCC,30,100,95,1
+Popular_Front_for_the_Liberation_of_Palestine_PFLP,0,20,95,1
+Muslim_fundamentalists_FND,0,10,80,1

@@ -1,0 +1,11 @@
+name,position,capabilities,salience,resolve
+Netherlands,0.4,0.08,0.8,1
+Belgium,0.7,0.08,0.4,1
+Luxembourg,0.4,0.03,0.2,1
+Germany,0.4,0.16,0.8,1
+Gfrance,1,0.16,0.6,1
+Italy,1,0.16,0.6,1
+UK,1,0.16,0.9,1
+Ireland,0.7,0.05,0.2,1
+Denmark,0.4,0.05,2,1
+Greece,0.7,0.08,0.7,1

@@ -1,0 +1,14 @@
+Actor,Capability,Salience,Position
+Bosnia,0.0018,0,0
+Serbia,0.0048,0,0
+Moldova,0.0012,0,0.5
+Finland,0.0279,0.1,0.4
+"UKR, Kiev",0.0398,0.92,0.2
+"UKR, Western Ukraine less Kiev",0.0199,0.92,0.15
+"UKR, Eastern Ukraine",0.0133,0.7,0.55
+"NATO, sans USA",1.1826,0.21,0.15
+"NATO, the United States",0.8612,0.25,0.15
+Sweden,0.0361,0.1,0.4
+"Russia, Vladimir Putin",0.1087,0.8,1
+"Russia, elites",0.1,0.7,0.8
+"Russia, general public",0,0,0

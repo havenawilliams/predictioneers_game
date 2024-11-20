@@ -1,0 +1,13 @@
+name,position,capabilities,salience,resolve
+Soviet_Union,100,100,55,1
+United_States,50,100,55,1
+Israel_Peres,50,55,90,1
+Syria,100,55,75,1
+Jordan_Hussein,65,50,90,1
+Israel_Shamir,0,47.5,90,1
+Egypt,100,40,40,1
+Iraq,100,40,40,1
+Saudi_Arabia,100,40,40,1
+PLO,100,25,100,1
+France,100,10,15,1
+United_Kingdom,100,10,15,1

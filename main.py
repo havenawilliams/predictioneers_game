@@ -18,12 +18,6 @@ from check_utility import check_utility_decreasing
 g = pygambit.Game.read_game("game_alpha_0.0_game_1.gbt")
 
 #Load players
-#players = import_players_from_csv("players_3.csv")
-#players = import_players_from_csv("players_3_resolve.csv")
-#players = import_players_from_csv("ukraine_data_slim.csv")
-#players = import_players_from_csv("china_democratization_data.csv")
-#players = import_players_from_csv("ukraine_data_slim_resolve.csv")
-
 players = import_players_from_csv("israel_hamas_war.csv")
 
 
@@ -106,8 +100,6 @@ for number in range(0, 10):
 
 #Game conclusion summary statements
 print(f"Game is finished with status quo {Model.status_quo} after round {round_number}.")
-# for player in players:
-#     print(f"{player.name}'s final position is {player.position}.")
 
 #Export positions
 df = pd.DataFrame(position_recorder)
