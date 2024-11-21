@@ -4,6 +4,21 @@ import pygambit
 import pandas as pd
 from itertools import combinations
 import matplotlib.pyplot as plt
+import argparse
+
+# Set up argument parser
+parser = argparse.ArgumentParser(description="Run predictioneers game simulation with a specified CSV file.")
+parser.add_argument(
+    "csv_file",
+    type=str,
+    help="Path to the CSV file containing player data (relative to the current working directory)."
+)
+args = parser.parse_args()
+
+# Validate CSV file path
+csv_file_path = os.path.join("data", args.csv_file)
+if not os.path.exists(csv_file_path):
+    raise FileNotFoundError(f"The file '{csv_file_path}' does not exist.")
 
 #Get cwd
 os.chdir("C:\\Users\\haw27\Documents\\Haven_Code_Projects\\predictioneers_game\\predictioneers_game_alpha_00")
@@ -17,9 +32,8 @@ from check_utility import check_utility_decreasing
 #Load a game structure. Multiple copies will eventually be made.
 g = pygambit.Game.read_game("game_alpha_0.0_game_1.gbt")
 
-#Load players
-players = import_players_from_csv("israel_hamas_war.csv")
-
+# Load players from the specified CSV file
+players = import_players_from_csv(csv_file_path)
 
 #Create dictionary for games per player
 games_for_combinations = {}
@@ -122,6 +136,4 @@ plt.ylabel('Position')
 # Show the plot
 plt.show()
 
-players
-
-Model.status_quo
+print(Model.status_quo)
