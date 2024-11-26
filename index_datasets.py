@@ -10,7 +10,8 @@ def update_pg_datasets_index(data_folder):
         data_folder (str): Path to the folder containing datasets.
     """
     index_file_path = os.path.join(data_folder, "pg_datasets_index.csv")
-    datasets_in_folder = [f for f in os.listdir(data_folder) if f.endswith('.csv') and f != "pg_datasets_index.csv"]
+    datasets_in_folder = [f for f in os.listdir(data_folder) 
+                          if f.endswith('.csv') and not f.startswith("fake_") and f != "pg_datasets_index.csv"]
 
     # Load or create the index file
     if os.path.exists(index_file_path):
