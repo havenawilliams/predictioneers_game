@@ -7,10 +7,9 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 import argparse
 import os
-import pandas as pd
 
 # Set version number for the script
-version_number= "0.0_auto"
+version_number= 0.1
 
 # Import functions
 from pg_player_class import Player, Model, import_players_from_csv
