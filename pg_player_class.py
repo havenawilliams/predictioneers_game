@@ -102,60 +102,76 @@ class Model:
         self.status_quo = policy_vote / total_votes
 
 #Import players
-def import_players_from_csv(file_path: str) -> List[Player]:
+def import_players_from_csv(file_path: str) -> List['Player']:
     '''
-    This is a very complex function that does more than it's name suggests.
+    This is a very complex function that does more than its name suggests.
     First, it imports players from a compatible CSV and then normalizes player positions, salience, resolve, and capabilities.
     Next, it updates the status quo.
     It also introduces a new player attribute of uncertainty via a dictionary so that all players have uncertainty for each player.
     It returns all of the newly imported player objects in a list.
     '''
-    #Empty list of players
+    # Empty list of players
     players = []
 
-    #Import csv object into class
+    # Import csv object into class
     expected_fieldnames = ['name', 'position', 'capabilities', 'salience', 'resolve', 'true_hawk_type', 'true_retaliatory_type']
+    optional_fields = ['true_hawk_type', 'true_retaliatory_type']
+    default_values = {'true_hawk_type': 0.0, 'true_retaliatory_type': 0.0}
+
     with open(file_path, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
-        if reader.fieldnames != expected_fieldnames:
-            raise ValueError(f"Expected field names: {expected_fieldnames}. Found: {reader.fieldnames}")
+        
+        # Validate that required fields are present
+        missing_fields = [field for field in expected_fieldnames if field not in reader.fieldnames and field not in optional_fields]
+        if missing_fields:
+            raise ValueError(f"Missing required field(s): {missing_fields}")
+        
+        # Parse rows into Player objects
         for row in reader:
-            players.append(Player(row['name'], float(row['position']), float(row['capabilities']), float(row['salience']), float(row['resolve']), float(row['true_hawk_type']), float(row['true_retaliatory_type'])))
+            name = row['name']
+            position = float(row['position'])
+            capabilities = float(row['capabilities'])
+            salience = float(row['salience'])
+            resolve = float(row['resolve'])
+            true_hawk_type = float(row.get('true_hawk_type', default_values['true_hawk_type']))
+            true_retaliatory_type = float(row.get('true_retaliatory_type', default_values['true_retaliatory_type']))
+            
+            players.append(Player(name, position, capabilities, salience, resolve, true_hawk_type, true_retaliatory_type))
 
-    #If positions are out of 100 return them out of 1
-    if max([player.position for player in players]) > 1:
+    # If positions are out of 100, normalize them to be out of 1
+    if max(player.position for player in players) > 1:
         print("WARNING: non-recommended position range detected. Values should range between 1 to 0, inclusive. Values were automatically divided by 100.")
         for player in players:
-            player.position = player.position / 100
+            player.position /= 100
     
-    #If salience is out of 100 return them out of 1
-    if max([player.salience for player in players]) > 1:
+    # If salience is out of 100, normalize them to be out of 1
+    if max(player.salience for player in players) > 1:
         print("WARNING: non-recommended salience range detected. Values should range between 1 to 0, inclusive. Values were automatically divided by 100.")
         for player in players:
-            player.salience = player.salience / 100
+            player.salience /= 100
     
-    #If resolve is out of 100 return them out of 1
-    if max([player.resolve for player in players]) > 1:
+    # If resolve is out of 100, normalize them to be out of 1
+    if max(player.resolve for player in players) > 1:
         print("WARNING: non-recommended resolve range detected. Values should range between 1 to 0, inclusive. Values were automatically divided by 100.")
         for player in players:
-            player.resolve = player.resolve / 100
+            player.resolve /= 100
 
-    #Normalize capabilities
-    total_capabilities = sum([player.capabilities for player in players])
-    print("WARNING: capbilities were normalized.")
+    # Normalize capabilities
+    total_capabilities = sum(player.capabilities for player in players)
+    print("WARNING: capabilities were normalized.")
     for player in players:
-        player.capabilities = player.capabilities / total_capabilities
+        player.capabilities /= total_capabilities
     
-    #Update status quo
+    # Update status quo
     Model.update_status_quo(players)
 
-    #Add status quo attribute to all players
+    # Add status quo attribute to all players
     for player in players:
         player.status_quo = Model.status_quo
     
-    #Instantiate uncertainty of beliefs for each player
+    # Instantiate uncertainty of beliefs for each player
     for player in players:
         player.beliefs = {other_player.name: 0.5 for other_player in players if other_player != player}
     
-    #Returns all players as a list object :)
+    # Returns all players as a list object :)
     return players

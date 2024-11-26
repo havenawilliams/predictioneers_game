@@ -1,0 +1,12 @@
+data_set_name,forecasted_result,actual_result,date_of_forecast,version_number
+players,0.4271334094512324,0.2,2024-11-25 16:50:21,0.0
+china_democratization_data,0.6382485402146649,0.55,2024-11-25 17:43:49,0.0
+bruce_kyoto_data,0.0286058648278123,0.28,2024-11-25 18:34:19,0.0
+ukraine_data_slim_resolve,0.6411134495837499,0.65,2024-11-25 18:38:26,0.0
+haven_marijuana_legalization,0.041405417875916,0.65,2024-11-25 18:43:50,0.0
+haven_marijuana_legalization,0.0416034064937418,0.65,2024-11-25 18:46:33,0.0
+haven_israel_hamas_war,0.0021880884077805,0.45,2024-11-25 18:48:35,0.0
+haven_israel_hamas_war,0.0021880884077805,0.5,2024-11-25 19:35:03,red
+haven_israel_hamas_war,0.0021880884077805,0.6,2024-11-25 19:39:27,0.0_auto
+bruce_china_democratization_data,0.6382485402146649,0.0,2024-11-25 20:01:11,0.0_auto
+haven_israel_hamas_war,0.002188088407780511,0.0,2024-11-25 20:03:07,0.0_auto

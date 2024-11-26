@@ -1,11 +1,7 @@
 #Import packages
 import pygambit
-import os
 from statistics import mean
 from math import sqrt
-
-#Get cwd
-os.chdir("G:\\My Drive\\R\\ON Research Projects\\predictioneers_game\\predictioneers_game_alpha_00")
 
 #Import functions
 from pg_player_class import Player, Model, import_players_from_csv
