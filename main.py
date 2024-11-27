@@ -6,10 +6,6 @@ from itertools import combinations
 import matplotlib.pyplot as plt
 from datetime import datetime
 import argparse
-import os
-
-# Set version number for the script
-version_number= 0.1
 
 # Import functions
 from pg_player_class import Player, Model, import_players_from_csv
@@ -17,6 +13,9 @@ from play_game import get_solution, play_game, Bayesian_updating, update_positio
 from update_game import *
 from check_utility import check_utility_decreasing
 from generate_new_sheet import generate_sheet
+
+# Set version number for the script
+version_number = 0.1
 
 # Set up argparse
 parser = argparse.ArgumentParser(description="Run the Predictioneers Game simulation.")
@@ -33,8 +32,7 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-#Data entry functions
-
+# Data entry functions
 if not args.auto:
     print("Welcome to my recreation of Bruce Bueno de Mesquita's Predictioneer's Game!\nIf you don't know what that means, read the readme!")
 
@@ -45,7 +43,6 @@ def list_recent_csv_files(directory, count=3):
     all_files = [os.path.join(directory, f) for f in os.listdir(directory) if f.endswith(".csv")]
     recent_files = sorted(all_files, key=os.path.getmtime, reverse=True)[:count]
     return [os.path.basename(f) for f in recent_files]
-
 
 # Get the CSV file
 if args.csv_file:
@@ -73,7 +70,30 @@ csv_file_path = os.path.join("data", csv_file)
 if not os.path.exists(csv_file_path):
     raise FileNotFoundError(f"The file '{csv_file_path}' does not exist.")
 
-# Load a game structure. Multiple copies will eventually be made.
+def get_actual_outcome_from_index(data_set_name):
+    """
+    Checks the 'pg_datasets_index.csv' file to see if there is an existing 
+    actual_result for the given dataset. Returns the actual_result if found, 
+    otherwise returns None.
+    """
+    index_file_path = os.path.join("data", "pg_datasets_index.csv")
+    if not os.path.exists(index_file_path):
+        return None  # No index file exists
+    
+    # Load the index file
+    pg_index = pd.read_csv(index_file_path)
+    
+    # Check for the dataset name in the index
+    dataset_row = pg_index[pg_index['dataset_name'] == data_set_name]
+    if not dataset_row.empty and not pd.isna(dataset_row.iloc[0]['actual_result']):
+        return dataset_row.iloc[0]['actual_result']  # Return the existing actual_result
+    
+    return None  # No actual_result found or it is empty
+
+# Check for actual_result
+actual_result = get_actual_outcome_from_index(csv_file)
+
+# Load a game structure
 g = pygambit.Game.read_game("game_alpha_0.0_game_1.gbt")
 
 # Load players from the specified CSV file
@@ -140,47 +160,68 @@ while round_number < 100:
 
     # Check end game rule
     if check_utility_decreasing(round_number, utility_recorder):
-        if not finished_updating_positions:
-            while True:
-                update_choice = input("Do you want to update any player's positions? \nThis step simulates a shock where a player suddenly changes their position. \n(yes/no/finished): ").strip().lower()
-                if update_choice == "yes":
-                    player_update = input("Enter player name and position in the format. eg United States = 0.5: ")
-                    try:
-                        player_name, position = map(str.strip, player_update.split('='))
-                        position = float(position)
-                        player = next((p for p in players if p.name == player_name), None)
-                        if player:
-                            player.position = position
-                            print(f"Updated {player.name}'s position to {player.position}.")
-                        else:
-                            print(f"Player '{player_name}' not found.")
-                    except ValueError:
-                        print("Invalid input format. Please use 'Player Name = Position' (e.g., 'United States = 0.5').")
-                elif update_choice == "no":
-                    break
-                elif update_choice == "finished":
-                    finished_updating_positions = True
-                    break
-                else:
-                    print("Invalid choice. Please enter 'yes', 'no', or 'finished'.")
-
-            # Record updated positions after user input
-            for player in players:
-                position_recorder[round_number][player.name] = player.position
-
         break
 
-    print(f"Game continues past round {round_number}. Status quo: {Model.status_quo}")
-
-    # Update round number
     round_number += 1
 
+print(f"Game finished with status quo {Model.status_quo} after {round_number} rounds.")
 
-# Game conclusion
-print(f"Game is finished with status quo {Model.status_quo} after round {round_number}.")
-#------------------------------------------------------------------------------------------
-# Begin process to further export data
+# Save calibration data
+def save_calibration_data(data_set_name, forecasted_result):
+    if not args.auto:
+        save_to_calibration = input("Save forecast results? (yes/no): ").strip().lower()
+    else:
+        save_to_calibration = "yes"
 
+    if save_to_calibration not in ["yes", "y"]:
+        print("Results not saved.")
+        return
+
+    # Initialize actual_result
+    actual_result = get_actual_outcome_from_index(data_set_name)  # Check if there's an existing value
+    if actual_result is None:  # If not, prompt the user
+        while True:
+            try:
+                actual_result = float(input("Enter the actual outcome (0-1): ").strip())
+                if 0 <= actual_result <= 1:
+                    break
+                else:
+                    print("Please enter a number between 0 and 1.")
+            except ValueError:
+                print("Invalid input. Please enter a valid float between 0 and 1.")
+
+    # Save data
+    folder = "calibration_data"
+    os.makedirs(folder, exist_ok=True)
+    file_path = os.path.join(folder, "calibration_data.csv")
+
+    if not os.path.exists(file_path):
+        pd.DataFrame(columns=["data_set_name", "forecasted_result", "actual_result", "date_of_forecast", "version_number"]).to_csv(file_path, index=False)
+
+    date_of_forecast = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    calibration_data = pd.read_csv(file_path)
+
+    # Create a DataFrame for the new row
+    new_row = pd.DataFrame([{
+        "data_set_name": data_set_name,
+        "forecasted_result": forecasted_result,
+        "actual_result": actual_result,
+        "date_of_forecast": date_of_forecast,
+        "version_number": version_number
+    }])
+
+    # Concatenate the new row with the existing data
+    calibration_data = pd.concat([calibration_data, new_row], ignore_index=True)
+
+    # Save the updated DataFrame
+    calibration_data.to_csv(file_path, index=False)
+
+    print(f"Forecast results saved to {file_path}.")
+
+# Save calibration data at the end of the game
+save_calibration_data(csv_file, Model.status_quo)
+
+# Prepare output data
 output_data = {
     "name": [player.name for player in players],
     "position": [player.position for player in players],
@@ -192,86 +233,25 @@ output_data = {
 }
 df_output = pd.DataFrame(output_data)
 
-# Set up the output directory
+# Create output directory
 output_dir = "output"
 os.makedirs(output_dir, exist_ok=True)
 
-# Generate a subfolder in the output directory based on the input CSV name and current date
+# Create subfolder based on input CSV name and timestamp
 current_date = datetime.now().strftime('%Y-%m-%d-%H-%M')
 csv_base_name = os.path.splitext(os.path.basename(csv_file))[0]
 subfolder_name = f"{current_date}_{csv_base_name}"
 subfolder_path = os.path.join(output_dir, subfolder_name)
 os.makedirs(subfolder_path, exist_ok=True)
 
-#------------------------------------------------------------------------------------------
-
-def save_calibration_data(data_set_name, forecasted_result):
-    """
-    Ask the user if they want to save the calibration data and, if so, save it.
-    """
-    # Ask the user if they want to save the forecast
-    if not args.auto:
-        save_to_calibration = input("Do you want to save the results of this forecast to your calibration data? (yes/no): ").strip().lower()
-    else:
-        save_to_calibration = "yes "  # Default behavior for automated mode
-
-    if save_to_calibration not in ["yes", "y"]:
-        print("Forecast results were not saved to calibration data.")
-        return
-
-
-    # Ask the user for the actual outcome
-    while True:
-        try:
-            actual_result = float(input("What is the actual outcome of this scenario? Enter a value between 0 and 1: ").strip())
-            if 0 <= actual_result <= 1:
-                break
-            else:
-                print("Please enter a number between 0 and 1.")
-        except ValueError:
-            print("Invalid input. Please enter a valid float between 0 and 1.")
-
-    # Ensure the folder and CSV file exist
-    folder = "calibration_data"
-    os.makedirs(folder, exist_ok=True)
-    file_path = os.path.join(folder, "calibration_data.csv")
-    if not os.path.exists(file_path):
-        # Create the file with headers if it doesn't exist
-        pd.DataFrame(columns=["data_set_name", "forecasted_result", "actual_result", "date_of_forecast", "version_number"]).to_csv(file_path, index=False)
-
-    # Get the current date
-    date_of_forecast = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-    # Append the data to the CSV
-    calibration_data = pd.read_csv(file_path)
-    calibration_data = calibration_data.append({
-        "data_set_name": data_set_name,
-        "forecasted_result": forecasted_result,
-        "actual_result": actual_result,
-        "date_of_forecast": date_of_forecast,
-        "version_number": version_number
-    }, ignore_index=True)
-    calibration_data.to_csv(file_path, index=False)
-
-    print(f"Forecast results saved to {file_path}.")
-
-# Prompt the user to save forecast results to calibration data
-save_calibration_data(
-    data_set_name=csv_base_name,  # Use the base name of the CSV as the dataset name
-    forecasted_result=Model.status_quo  # Use the final status quo from the simulation
-)
-
-#------------------------------------------------------------------------------------------
-
-# Save the updated DataFrame as a CSV in the subfolder
+# Save updated DataFrame to the subfolder
 output_csv_name = f"{csv_base_name}_positions.csv"
 output_csv_path = os.path.join(subfolder_path, output_csv_name)
 df_output.to_csv(output_csv_path, index=False)
 
-# Saving a plot of player's evolving positions
-# Plot each actor's position over the rounds
+# Plot positions over rounds
 df_plot = pd.DataFrame(position_recorder).T
-plt.figure(figsize=(10, 6))  # Optional: adjust the figure size
+plt.figure(figsize=(10, 6))
 for actor in df_plot.columns:
     plt.plot(df_plot.index, df_plot[actor], marker='o', label=actor)
     plt.annotate(actor, (df_plot.index[-1], df_plot[actor].iloc[-1]),
@@ -284,32 +264,30 @@ plt.xlabel('Rounds', fontsize=12)
 plt.ylabel('Position', fontsize=12)
 plt.legend(fontsize=10)
 
-# Save the plot to the subfolder
+# Save the plot
 plot_file_name = f"{csv_base_name}_positions_plot.png"
 plot_file_path = os.path.join(subfolder_path, plot_file_name)
-plt.savefig(plot_file_path, bbox_inches='tight')  # Ensure nothing gets clipped in the saved file
-plt.close()  # Close the plot to free memory
+plt.savefig(plot_file_path, bbox_inches='tight')
+plt.close()
 
-# Create an N x N matrix of players' beliefs
+# Belief Matrix
 belief_matrix = pd.DataFrame(index=[player.name for player in players], columns=[player.name for player in players])
 
-# Saving N x N matrix on player beliefs.
-# Populate the matrix with beliefs
+# Populate belief matrix
 for player_a in players:
     for player_b in players:
         if player_a.name == player_b.name:
-            belief_matrix.at[player_a.name, player_b.name] = 1.0  # Self-belief is always 1.0
+            belief_matrix.at[player_a.name, player_b.name] = 1.0
         else:
             belief_matrix.at[player_a.name, player_b.name] = player_a.beliefs.get(player_b.name, 0.0)
 
-# Save the beliefs matrix as a CSV file in the subfolder
+# Save belief matrix
 beliefs_csv_name = f"{csv_base_name}_beliefs_matrix.csv"
 beliefs_csv_path = os.path.join(subfolder_path, beliefs_csv_name)
 belief_matrix.to_csv(beliefs_csv_path)
 
-# Final notification of saved outputs
-# Notify the user of results
+# Notify user of saved results
 print(f"Results saved to '{subfolder_path}':")
-print(f"  - Chart: {plot_file_name}")
-print(f"  - Data: {output_csv_name}")
-print(f"  - Beliefs: {beliefs_csv_name}")
+print(f"  - Positions data: {output_csv_name}")
+print(f"  - Plot: {plot_file_name}")
+print(f"  - Beliefs matrix: {beliefs_csv_name}")
