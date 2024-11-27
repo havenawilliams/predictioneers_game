@@ -1,0 +1,4 @@
+name,position,capabilities,salience,resolve,true_hawk_type,true_retaliatory_type
+player_a,1,1,0.9649326030317623,1,1,1
+player_b,0,1,1,1,1,1
+player_c,0.75,1,1,1,1,1

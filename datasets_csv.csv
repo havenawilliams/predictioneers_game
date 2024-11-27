@@ -1,3 +1,7 @@
-#bruce_china_democratization_data.csv
+#If you want to run a lot of simulations back to back and automatically save their output,
+#write the name of each daataset you want to include here.
+#Any lines you comment out with a '#' will be skipped.
+#Run the automate_main.py script for more.
+bruce_china_democratization_data.csv
 haven_israel_hamas_war.csv
 haven_russia_ukraine_war.csv

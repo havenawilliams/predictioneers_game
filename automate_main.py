@@ -30,9 +30,10 @@ if user_response != "yes":
     print("Operation canceled by user.")
     exit()
 
-# Read dataset names from the CSV
+# Read dataset names from the CSV, skipping lines that start with #
 with open(datasets_csv, "r") as file:
-    datasets = [row[0] for row in csv.reader(file) if row]  # Skip empty rows
+    datasets = [row[0] for row in csv.reader(file) if row and not row[0].strip().startswith("#")]  # Skip empty and commented rows
+
 
 # Run main.py for each dataset
 print("\nStarting the execution of main.py for each dataset...")
@@ -55,4 +56,4 @@ print(f"Total datasets processed: {len(datasets)}")
 print(f"Successfully processed: {success_count}")
 print(f"Failed to process: {failure_count}. You either have a misspelled dataset or your dataset is missing.")
 print("\nOutputs have been generated for each dataset.")
-print("For further analysis of the results, please use the 'diagnostics.py' script.")
+print("For further analysis of the results, please use the 'diagnostics.py' script for regression results or the 'calibration_plot.py' scipt for a q-plot of multiple results.")
