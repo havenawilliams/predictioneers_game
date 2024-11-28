@@ -9,14 +9,11 @@ from play_game import get_solution, play_game, Bayesian_updating, update_positio
 from update_game import *
 
 #Load a game structure
-#g = pygambit.Game.read_game("pg_alpha_00_game_unit_test.gbt") #test game structure
-#g = pygambit.Game.read_game("pg_mini_2024_payoffs_automated.gbt") #alpha 0.0 game structure
-g = pygambit.Game.read_game("game_alpha_0.0_game_big_map.gbt")
+g = pygambit.Game.read_game("game_alpha_0.0_game_1.gbt")
 
 #Test pg_player_class functions
 #Load players
-players = import_players_from_csv("players.csv")
-#players = import_players_from_csv("ukraine_data.csv")
+players = import_players_from_csv(".\data\\fake_data_unit_test.csv")
 
 #Create players as objects
 player_a = players[0]
@@ -29,8 +26,6 @@ player_a.conflict_probabilities(player_b, players)
 player_b.conflict_probabilities(player_a, players)
 player_a.victory_probability
 player_b.victory_probability
-
-
 
 #Test play_game functions
 solution = get_solution(g)

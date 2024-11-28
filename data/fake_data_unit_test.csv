@@ -1,0 +1,5 @@
+name,position,capabilities,salience,resolve
+player_a,1,0.5,0.9,1
+player_b,0.5,0.6,0.1,0.4
+player_c,0.25,0.2,0,0.35
+player_d,0.75,0.01,0,0.9

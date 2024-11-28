@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 import argparse
 import pygambit
+import numpy as np  # Added for jittering
 
 # Import the simulation function
 from game_simulation import run_game_simulation  # Assuming the function is in `game_simulation.py`
@@ -38,7 +39,7 @@ parser.add_argument(
 args = parser.parse_args()
 
 # Data entry functions
-if not args.auto:
+if not args.auto and not args.jitter:
     print("Welcome to my recreation of Bruce Bueno de Mesquita's Predictioneer's Game!\nIf you don't know what that means, read the readme!")
 
 # Get the CSV file
@@ -62,6 +63,9 @@ else:
             csv_file = user_input
             break
 
+# Ensure csv_base_name is defined
+csv_base_name = os.path.splitext(os.path.basename(csv_file))[0]
+
 # Build the CSV file path
 csv_file_path = os.path.join("data", csv_file)
 if not os.path.exists(csv_file_path):
@@ -74,13 +78,57 @@ players = import_players_from_csv(csv_file_path)
 g = pygambit.Game.read_game("game_alpha_0.0_game_1.gbt")
 
 if args.jitter:
-    print("jitter")
+    # Jittered simulation block
+    print("Jittering activated. Expect fewer prompts than normal.")
+    num_iterations = 10
+    status_quo_recorder_all_runs = []
 
-# If --jitter is not provided, perform post-simulation steps
-if not args.jitter:
-    #Run the game simulation
+    for i in range(num_iterations):
+        # Add jitter to player salience
+        for player in players:
+            player.salience += np.random.normal(0, 0.02)  # Small noise with mean 0 and std 0.01
+
+        # Run the simulation with jittered values
+        simulation_results = run_game_simulation(players, g, Model, args)
+
+        # Extract and store the Model.status_quo for this run
+        status_quo_recorder_all_runs.append(simulation_results["status_quo_recorder"])
+
+    # Prepare data for plotting status quo over rounds across iterations
+    status_quo_df = pd.DataFrame(status_quo_recorder_all_runs).T
+    status_quo_df.columns = [f"Run {i+1}" for i in range(num_iterations)]
+
+    # Plot status quo over rounds
+    plt.figure(figsize=(10, 6))
+    for col in status_quo_df.columns:
+        plt.plot(status_quo_df.index, status_quo_df[col], marker='o', label=col)
+    
+    # Add title, labels, and legend
+    plt.title('Change in Model.status_quo Over Rounds (Jittered)', fontsize=14)
+    plt.xlabel('Rounds', fontsize=12)
+    plt.ylabel('Model.status_quo Position', fontsize=12)
+    plt.legend(fontsize=10)
+
+    # Save the plot
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
+    current_date = datetime.now().strftime('%Y-%m-%d-%H-%M')
+    subfolder_name = f"{current_date}_{csv_base_name}"
+    subfolder_path = os.path.join(output_dir, subfolder_name)
+    os.makedirs(subfolder_path, exist_ok=True)
+
+    plot_file_name = f"{csv_base_name}_status_quo_jitter_plot.png"
+    plot_file_path = os.path.join(subfolder_path, plot_file_name)
+    plt.savefig(plot_file_path, bbox_inches='tight')
+    plt.close()
+
+    # Notify user of saved results
+    print(f"Jittered simulation results saved to '{subfolder_path}':")
+    print(f"  - Status quo plot: {plot_file_name}")
+
+else:
+    # Non-jittered simulation block
     simulation_results = run_game_simulation(players, g, Model, args)
-    #Extract results
     final_status_quo = simulation_results["final_status_quo"]
     utility_recorder = simulation_results["utility_recorder"]
     position_recorder = simulation_results["position_recorder"]
@@ -104,10 +152,7 @@ if not args.jitter:
     # Create output directory
     output_dir = "output"
     os.makedirs(output_dir, exist_ok=True)
-
-    # Create subfolder based on input CSV name and timestamp
     current_date = datetime.now().strftime('%Y-%m-%d-%H-%M')
-    csv_base_name = os.path.splitext(os.path.basename(csv_file))[0]
     subfolder_name = f"{current_date}_{csv_base_name}"
     subfolder_path = os.path.join(output_dir, subfolder_name)
     os.makedirs(subfolder_path, exist_ok=True)

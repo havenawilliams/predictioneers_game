@@ -17,7 +17,7 @@ def run_game_simulation(players, g, Model, args, max_rounds=100):
 
     Returns:
         dict: Results of the simulation, including final status quo, utility recorder,
-              position recorder, and number of rounds completed.
+              position recorder, status quo recorder, and number of rounds completed.
     """
     # Create dictionary for games per player
     games_for_combinations = {}
@@ -31,9 +31,10 @@ def run_game_simulation(players, g, Model, args, max_rounds=100):
     # Initialize round number
     round_number = 0
 
-    # Initialize data structure to capture intra-round data
+    # Initialize data structures to capture intra-round data
     utility_recorder = {}
     position_recorder = {}
+    status_quo_recorder = []  # New recorder for status quo
 
     # Main game loop
     finished_updating_positions = args.auto  # Skip position updates if in auto mode
@@ -45,6 +46,9 @@ def run_game_simulation(players, g, Model, args, max_rounds=100):
         for player in players:
             utility_recorder[round_number][player.name] = player.utility(Model.status_quo)
             position_recorder[round_number][player.name] = player.position
+
+        # Record the status quo for this round
+        status_quo_recorder.append(Model.status_quo)
 
         # Store previous round positions
         for player in players:
@@ -91,5 +95,6 @@ def run_game_simulation(players, g, Model, args, max_rounds=100):
         "final_status_quo": Model.status_quo,
         "utility_recorder": utility_recorder,
         "position_recorder": position_recorder,
+        "status_quo_recorder": status_quo_recorder,
         "rounds_completed": round_number
     }
