@@ -2,6 +2,8 @@
 import csv
 from dataclasses import dataclass
 from typing import List
+from cost_dictionaries import cost_dictionary
+import random
 
 '''
 This document introduces three key elements:
@@ -59,36 +61,36 @@ class Player:
         Hawks pay lower cost alpha because they perceive resistance as less of a threat.
         Associated with outcome 2.'''
         if player_a_hawk == 1:
-            return (other_player.capabilities * .01 / self.capabilities) #cost is lower for hawk players
+            return (other_player.capabilities * cost_dictionary['alpha_hawk'] / self.capabilities) #cost is lower for hawk players
         elif player_a_hawk == 0:
-            return (other_player.capabilities * .02 / self.capabilities) #cost is larger for not hawk players
+            return (other_player.capabilities * cost_dictionary['alpha_not_hawk'] / self.capabilities) #cost is larger for not hawk players
 
     def gamma(self, other_player, player_a_hawk, player_a_retaliatory, player_b_hawk, player_b_retaliatory): #retaliatory influenced
         '''The heuristic cost of being coerced and not resisting.
         If other player is retaliatory then costs to player are higher.
         Associated with outcome 5.'''
         if player_b_retaliatory == 1:
-            return (other_player.capabilities * .02 / self.capabilities) #cost is higher with retaliatory opponent
+            return (other_player.capabilities * cost_dictionary['gamma_retaliatory'] / self.capabilities) #cost is higher with retaliatory opponent
         elif player_b_retaliatory == 0:
-            return (other_player.capabilities * .01 / self.capabilities) #cost is lower for not retaliatory opponent
+            return (other_player.capabilities * cost_dictionary['gamma_not_retaliatory'] / self.capabilities) #cost is lower for not retaliatory opponent
 
     def tau(self, other_player, player_a_hawk, player_a_retaliatory, player_b_hawk, player_b_retaliatory): #retaliatory influenced
         '''The heuristic cost of being coerced and resisting.
         If other player is retaliatory then costs to player are higher.
         Associated with outcome 4.'''
         if player_b_retaliatory == 1:
-            return (other_player.capabilities * .02 / self.capabilities) #cost is higher with retaliatory opponent
+            return (other_player.capabilities * cost_dictionary['tau_retaliatory'] / self.capabilities) #cost is higher with retaliatory opponent
         elif player_b_retaliatory == 0:
-            return (other_player.capabilities * .01 / self.capabilities) #cost is lower for not retaliatory opponent
+            return (other_player.capabilities * cost_dictionary['tau_not_retaliatory'] / self.capabilities) #cost is lower for not retaliatory opponent
 
     def phi(self, other_player, player_a_hawk, player_a_retaliatory, player_b_hawk, player_b_retaliatory): #hawk influenced
         '''The heuristic cost of cost of coercing.
         If type is hawk, player pays lower cost.
         Associated with outcomes 2, 3, 4.'''
         if player_a_hawk == 1:
-            return (other_player.capabilities * .01 / self.capabilities)
+            return (other_player.capabilities * cost_dictionary['phi_hawk'] / self.capabilities)
         elif player_a_hawk == 0:
-            return (other_player.capabilities * .02 / self.capabilities)
+            return (other_player.capabilities * cost_dictionary['phi_not_hawk'] / self.capabilities)
 
 @dataclass
 class Model:
@@ -173,5 +175,8 @@ def import_players_from_csv(file_path: str) -> List['Player']:
     for player in players:
         player.beliefs = {other_player.name: 0.5 for other_player in players if other_player != player}
     
+    #Comment this out if it gets weird
+    #random.shuffle(players)
+
     # Returns all players as a list object :)
     return players

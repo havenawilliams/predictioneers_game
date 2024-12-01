@@ -2,6 +2,7 @@
 import pygambit
 from statistics import mean
 from math import sqrt
+from itertools import combinations
 
 #Import functions
 from pg_player_class import Player, Model, import_players_from_csv
@@ -14,6 +15,9 @@ g = pygambit.Game.read_game("game_alpha_0.0_game_1.gbt")
 #Test pg_player_class functions
 #Load players
 players = import_players_from_csv(".\data\\fake_data_unit_test.csv")
+
+for player_pair in combinations(players, 2):
+    print(player_pair)
 
 #Create players as objects
 player_a = players[0]

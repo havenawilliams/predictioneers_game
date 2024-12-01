@@ -6,6 +6,7 @@ from datetime import datetime
 import argparse
 import pygambit
 import numpy as np  # Added for jittering
+import copy
 
 # Import the simulation function
 from game_simulation import run_game_simulation  # Assuming the function is in `game_simulation.py`
@@ -72,19 +73,22 @@ if not os.path.exists(csv_file_path):
     raise FileNotFoundError(f"The file '{csv_file_path}' does not exist.")
 
 # Load players from the specified CSV file
-players = import_players_from_csv(csv_file_path)
+initial_players = import_players_from_csv(csv_file_path)
 
 # Load the game structure (adjust path to game structure as necessary)
-g = pygambit.Game.read_game("game_alpha_0.0_game_1.gbt")
+#g = pygambit.Game.read_game("game_alpha_0.0_game_1.gbt")
 
 if args.jitter:
     # Jittered simulation block
     print("Jittering activated. Expect fewer prompts than normal.")
-    num_iterations = 10
+    num_iterations = int(input("How many iterations would you like to run? "))
     status_quo_recorder_all_runs = []
 
     for i in range(num_iterations):
         # Add jitter to player salience
+        players = copy.deepcopy(initial_players)
+        Model.update_status_quo(players)
+        g = pygambit.Game.read_game("game_alpha_0.0_game_1.gbt")
         for player in players:
             player.salience += np.random.normal(0, 0.02)  # Small noise with mean 0 and std 0.01
 
@@ -127,7 +131,10 @@ if args.jitter:
     print(f"  - Status quo plot: {plot_file_name}")
 
 else:
-    # Non-jittered simulation block
+    # Non-jittered simulation block\
+    players = copy.deepcopy(initial_players)
+    Model.update_status_quo(players)
+    g = pygambit.Game.read_game("game_alpha_0.0_game_1.gbt")
     simulation_results = run_game_simulation(players, g, Model, args)
     final_status_quo = simulation_results["final_status_quo"]
     utility_recorder = simulation_results["utility_recorder"]

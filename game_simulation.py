@@ -1,4 +1,4 @@
-from itertools import combinations
+from itertools import combinations, permutations
 import pygambit
 from check_utility import *
 from play_game import *
@@ -21,12 +21,13 @@ def run_game_simulation(players, g, Model, args, max_rounds=100):
     """
     # Create dictionary for games per player
     games_for_combinations = {}
-    for combination in combinations(players, 2):
+    for combination in permutations(players, 2):
         key = tuple(player.name for player in combination)
         games_for_combinations[key] = g
 
     # Initialize status quo
     initial_status_quo = Model.status_quo
+    #print(f"Initial status quo is {initial_status_quo}, {players[0].position} is {players[0].name}'s start position")
 
     # Initialize round number
     round_number = 0
