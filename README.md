@@ -1,6 +1,8 @@
 
 # Predictioneer's Game Simulation
 
+AS OF 11/30/2024 THERE IS AN ERROR IN THE CODE THAT CAUSES SOME DATASETS TO CONSISTENTLY PRODUCE OUTCOMES OF AROUND .003 AS A FINAL STATUS QUO DESPITE THIS OUTCOME MAKING NO SENSE CONDITIONAL ON THE DATA. THIS IS A BUG. RESEARCH INTO THIS IS ONGOING.
+
 Welcome to the **Predictioneer's Game Simulation**, a recreation of the strategic prediction framework described in Bruce Bueno de Mesquita's *The Predictioneer's Game*. This project uses game theory, Bayesian updating, and data-driven modeling to simulate negotiations and predict outcomes in multi-agent interactions.
 
 ## Features

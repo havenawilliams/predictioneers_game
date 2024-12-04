@@ -10,7 +10,7 @@ from play_game import get_solution, play_game, Bayesian_updating, update_positio
 from update_game import *
 
 #Load a game structure
-g = pygambit.Game.read_game("game_alpha_0.0_game_1.gbt")
+g = pygambit.Game.read_game("game_full.gbt")
 
 #Test pg_player_class functions
 #Load players

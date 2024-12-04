@@ -35,12 +35,6 @@ class Player:
         theta = self.resolve
         beta = 1 - theta
         return ((1 - (self.position - other_player_position) ** 2) ** theta) * ((1 - (self.position - Model.status_quo) ** 2) ** beta)
-    
-    def utility_point(self, input_position):
-        '''This function is the same as the utility function but takes an arbitrary point as an argument.'''
-        theta = self.resolve
-        beta = 1 - theta
-        return ((1 - (self.position - input_position) ** 2) ** theta) * ((1 - (self.position - input_position) ** 2) ** beta)
 
     def conflict_probabilities(self, other_player, players):
         '''Takes self, other_player, and players as arguments and returns the 
