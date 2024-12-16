@@ -50,4 +50,4 @@ lowest_costs = {
 
 # Add more variations here as needed...
 
-cost_dictionary = lowest_costs
+cost_dictionary = low_costs

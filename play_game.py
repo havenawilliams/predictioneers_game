@@ -19,7 +19,7 @@ def get_solution(game):
     equilibrium = pygambit.nash.logit_solve(game)[0]
     return equilibrium
 
-def play_game(player_1, player_2, game, theta, solution):
+def play_game(player_1, player_2, updated_game, solution):
     '''
     Play game function with first player being up the game tree and second player being down the game tree.
     Game object is loaded from local dictionary to allow game types to be written faster (avoids disk writing).
@@ -29,25 +29,26 @@ def play_game(player_1, player_2, game, theta, solution):
     Note to self on 3/27/24: Credible outcomes need to be weighted, eventually.
     '''
     #For more on Cobb-Douglass utility functions, see: https://en.wikipedia.org/wiki/Cobb-Douglas_production_function
-    beta = 1 - theta
 
     #Instantiate empty list of credible proposals
     credible_proposals = []
 
     #Gather terminal nodes
-    game_terminal_nodes = gather_terminal_nodes(game.root)
+    game_terminal_nodes = gather_terminal_nodes(updated_game.root)
 
     #Credible proposal condition 1
     for node in game_terminal_nodes:
         if "coerce" in node.label and solution.realiz_prob(node) > 0:
             credible_proposals.append(node)  # Append the node to the list
+    print(credible_proposals, "play_game condition 1")
 
     #Credible proposal condition 2
-    player_1_condition_2_bound = player_1.utility(player_2.position) * ((1 - (player_1.position - player_2.position)**2)**theta) * ((1 - (player_1.resolve - player_2.resolve)**2)**beta)
-
+    player_1_condition_2_bound = player_1.utility(player_2.position) * ((1 - (player_1.position - player_2.position)**2)**player_1.theta) * ((1 - (player_1.resolve - player_2.resolve)**2)**player_1.beta)
+    print(player_1_condition_2_bound, "bound, play_game")
     for node in game_terminal_nodes:
-        if abs(float(node.outcome.__getitem__("Player 1")) - player_1.position) < player_1_condition_2_bound:
+        if solution.realiz_prob(node) > 0 and abs(float(node.outcome.__getitem__("Player 1"))) > player_1_condition_2_bound: #previously <
             credible_proposals.append(node)  # Append the node to the list
+    print(credible_proposals, "condition 2")
 
     if credible_proposals != []:
         return credible_proposals
@@ -91,13 +92,18 @@ def update_position(player_a, player_b, game, credible_proposals):
     The solution is a real solution to the inverse of the quadratic loss utility function.
     '''
     average_utility_a = mean([float(node.outcome["Player 1"]) for node in credible_proposals])
+    print(average_utility_a)
     average_utility_b = mean([float(node.outcome["Player 2"]) for node in credible_proposals])
+    print(average_utility_b)
+
+    #Update player a position
     if player_a.position > player_b.position:
-        player_a.position = clamp(Model.status_quo + sqrt(1 - average_utility_a) / 2)
+        player_a.position = clamp(player_a.position - sqrt(1 - average_utility_a))
     else:
-        player_a.position = clamp(Model.status_quo - sqrt(1 - average_utility_a) / 2)
+        player_a.position = clamp(player_a.position + sqrt(1 - average_utility_a))
+    #Update player b position    
     if player_b.position > player_a.position:
-        player_b.position = clamp(Model.status_quo + sqrt(1 - average_utility_b) / 2)
+        player_b.position = clamp(player_b.position - sqrt(1 - average_utility_b))
     else:
-        player_b.position = clamp(Model.status_quo - sqrt(1 - average_utility_b) / 2)
+        player_b.position = clamp(player_b.position + sqrt(1 - average_utility_b))
     

@@ -19,7 +19,7 @@
 EFG 2 R "Untitled Extensive Game" { "Player 1" "Player 2" }
 ""
 
-c "" 1 "" { "1" 1/2 "2" 1/2 } 0
+c "" 1 "" { "a_hawk" 1/2 "a_dove" 1/2 } 0
 p "" 1 1 "" { "a proposes" "a does not propose" } 0
 p "" 2 1 "" { "b counters" "b accepts" } 0
 p "" 1 2 "" { "a tries to coerce b" "a offers a compromise" } 0
@@ -40,36 +40,36 @@ p "" 2 5 "" { "b tries to coerce a" "b offers a compromise" } 0
 p "" 1 5 "" { "a resists" "a backs down" } 0
 t "outcome_4" 9 "" { 0, 0 }
 t "outcome_5" 10 "" { 0, 0 }
-p "" 1 11 "" { "a compromises with b" "a coerces b" } 0
-t "outcome_6" 14 "" { 0, 0 }
-p "" 2 12 "" { "b resists" "b gives in" } 0
-t "outcome_2" 11 "" { 0, 0 }
-t "outcome_3" 12 "" { 0, 0 }
+p "" 1 6 "" { "a compromises with b" "a coerces b" } 0
+t "outcome_6" 11 "" { 0, 0 }
+p "" 2 6 "" { "b resists" "b gives in" } 0
+t "outcome_2" 12 "" { 0, 0 }
+t "outcome_3" 13 "" { 0, 0 }
 p "" 1 1 "" { "a proposes" "a does not propose" } 0
-p "" 2 6 "" { "b counters" "b accepts" } 0
-p "" 1 6 "" { "a tries to coerce b" "a offers a compromise" } 0
-p "" 2 7 "" { "b resists" "b backs down" } 0
-t "outcome_2" 1 "" { 0, 0 }
-t "outcome_3" 2 "" { 0, 0 }
-p "" 2 8 "" { "b compromises with a" "b coerces a" } 0
-t "outcome_6" 3 "" { 0, 0 }
-p "" 1 7 "" { "a resists" "a gives in" } 0
-t "outcome_4" 4 "" { 0, 0 }
-t "outcome_5" 5 "" { 0, 0 }
-t "outcome_1" 6 "" { 0, 0 }
-p "" 2 9 "" { "b does not proposes" "b proposes" } 0
-t "outcome_7" 7 "" { 0, 0 }
-p "" 1 8 "" { "a accepts" "a counters" } 0
-t "outcome_8" 8 "" { 0, 0 }
-p "" 2 10 "" { "b tries to coerce a" "b offers a compromise" } 0
-p "" 1 9 "" { "a resists" "a backs down" } 0
-t "outcome_4" 9 "" { 0, 0 }
-t "outcome_5" 10 "" { 0, 0 }
-p "" 1 10 "" { "a compromises with b" "a coerces b" } 0
-t "outcome_6" 13 "" { 0, 0 }
-p "" 2 11 "" { "b resists" "b gives in" } 0
-t "outcome_2" 11 "" { 0, 0 }
-t "outcome_3" 12 "" { 0, 0 }
+p "" 2 7 "" { "1" "2" } 0
+p "" 1 7 "" { "1" "2" } 0
+p "" 2 8 "" { "1" "2" } 0
+t "outcome_2" 14 "" { 0, 0 }
+t "outcome_3" 15 "" { 0, 0 }
+p "" 2 9 "" { "1" "2" } 0
+t "outcome_6" 16 "" { 0, 0 }
+p "" 1 8 "" { "1" "2" } 0
+t "outcome_4" 17 "" { 0, 0 }
+t "outcome_5" 18 "" { 0, 0 }
+t "outcome_1" 19 "" { 0, 0 }
+p "" 2 10 "" { "1" "2" } 0
+t "outcome_7" 20 "" { 0, 0 }
+p "" 1 9 "" { "1" "2" } 0
+t "outcome_8" 21 "" { 0, 0 }
+p "" 2 11 "" { "1" "2" } 0
+p "" 1 10 "" { "1" "2" } 0
+t "outcome_4" 22 "" { 0, 0 }
+t "outcome_5" 23 "" { 0, 0 }
+p "" 1 11 "" { "1" "2" } 0
+t "outcome_6" 24 "" { 0, 0 }
+p "" 2 12 "" { "1" "2" } 0
+t "outcome_2" 25 "" { 0, 0 }
+t "outcome_3" 26 "" { 0, 0 }
 </efgfile>
 </game>
 </gambit:document>

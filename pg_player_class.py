@@ -28,13 +28,13 @@ class Player:
         self.votes = self.capabilities * self.salience #This is used to calculate clout in the model's probability space in the Model class
         self.ideal_point = self.position #unused, for now, but might be useful for resolve
         self.strategy = "unknown" #Initialization value is a placeholder. This is updated after players interact. This is used to check if all players have converged to universal position. There is currently no implementation of this as of 3/26/24.
+        self.theta = self.resolve
+        self.beta = 1 - self.theta
 
     #The basic utility that a player attaches to another player's position
     def utility(self, other_player_position):
         '''Utility is one minus the squared difference between the positions, weighted by resolve.'''
-        theta = self.resolve
-        beta = 1 - theta
-        return ((1 - (self.position - other_player_position) ** 2) ** theta) * ((1 - (self.position - Model.status_quo) ** 2) ** beta)
+        return ((1 - (self.position - other_player_position) ** 2) ** self.theta) * ((1 - (self.position - Model.status_quo) ** 2) ** self.beta)
 
     def conflict_probabilities(self, other_player, players):
         '''Takes self, other_player, and players as arguments and returns the 

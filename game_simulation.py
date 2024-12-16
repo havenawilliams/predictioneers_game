@@ -1,6 +1,6 @@
 from itertools import combinations, permutations
 import pygambit
-from check_utility import *
+from check_utility import check_utility_decreasing
 from play_game import *
 from update_game import *
 
@@ -40,6 +40,8 @@ def run_game_simulation(players, g, Model, args = False, cutoff = False, max_rou
     # Main game loop
     finished_updating_positions = args.auto  # Skip position updates if in auto mode
 
+    print("Game simulation begun. Expect long wait times, especially for large numbers of players.")
+
     while round_number < max_rounds:
         utility_recorder[round_number] = {}
         position_recorder[round_number] = {}
@@ -54,35 +56,43 @@ def run_game_simulation(players, g, Model, args = False, cutoff = False, max_rou
             player.previous_position = player.position
 
         # Model each player pair
-        for player_pair in combinations(players, 2):
+        for player_pair in permutations(players, 2):
             
-            print(Model.status_quo, round_number, [player.position for player in players])
-
+            print("status quo", Model.status_quo, "round number", round_number, "player positions: ", [player.position for player in players], [player.name for player in player_pair])
+            print(player_pair[0].name, player_pair[0].utility(player_pair[1].position), "player name, utiliy to opponents position, game_simulation")
+            print(player_pair[1].name ,player_pair[1].utility(player_pair[0].position), "opponent name, utility to player position, game_simulation")
             # Update player probabilities of victory over another
             player_pair[0].conflict_probabilities(player_pair[1], players)
             player_pair[1].conflict_probabilities(player_pair[0], players)
 
-            # Update the game
+            # Get players for the round
             players_for_round = tuple(player.name for player in player_pair)
-            games_for_combinations[players_for_round].set_chance_probs(
-                games_for_combinations[players_for_round].root.infoset,
-                [player_pair[0].beliefs[player_pair[1].name], 1 - player_pair[0].beliefs[player_pair[1].name]]
-            )
+
+            # Get belief
+            beliefs = round(player_pair[0].beliefs[player_pair[1].name], 2)
+
+            # Define root node
+            root_node = games_for_combinations[players_for_round].root.infoset
+
+            # Update root node with beliefs
+            games_for_combinations[players_for_round].set_chance_probs(root_node, (beliefs, round(1 - beliefs, 2)))
+
+            # Fill beliefs
             update_game(player_pair[0], player_pair[1], games_for_combinations[players_for_round])
 
             # Compute the solution of the updated game
             solution = get_solution(g)
 
             # Get the credible outcomes
-            credible_proposals = play_game(player_pair[0], player_pair[1], g, 1, solution)
+            credible_proposals = play_game(player_pair[0], player_pair[1], g, solution)
 
-            # Bayesian updating
+            # Update player beliefs according to Baye's rule with some work around logic in BdM 2011
             Bayesian_updating(g, credible_proposals, solution, player_pair[0], player_pair[1])
 
             # Update positions
             update_position(player_pair[0], player_pair[1], games_for_combinations[players_for_round], credible_proposals)
         
-        #Update status quo after round (previously WIHIN the above for loop as of 12/3/24)
+        # Update status quo after round (previously WIHIN the above for loop as of 12/3/24)
         Model.update_status_quo(players)
         # Record the status quo for this round
         status_quo_recorder.append(Model.status_quo)
@@ -90,9 +100,9 @@ def run_game_simulation(players, g, Model, args = False, cutoff = False, max_rou
         # Check end game rule
         if not cutoff:
             if check_utility_decreasing(round_number, utility_recorder):
-                round_number += 1
                 break
-
+        
+        print(f"Game continues past round {round_number}.")
         round_number += 1
 
     print(f"Game finished with status quo {status_quo_recorder[-1]} after {round_number} rounds.")

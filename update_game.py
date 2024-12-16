@@ -53,11 +53,11 @@ def outcome_5b(player_a, player_b, player_a_hawk, player_a_retaliatory, player_b
 
 def outcome_6a(player_a, player_b, player_a_hawk, player_a_retaliatory, player_b_hawk, player_b_retaliatory):
     '''A's expected utility if A and B compromise.'''
-    return clamp(player_a.victory_probability * (1 - player_a.utility(player_a.position)) + (1 - player_a.victory_probability) * (1 - player_a.utility(player_b.position)))
+    return clamp(player_a.victory_probability * (player_a.utility(player_a.position)) + (1 - player_a.victory_probability) * (player_a.utility(player_b.position)))
 
 def outcome_6b(player_a, player_b, player_a_hawk, player_a_retaliatory, player_b_hawk, player_b_retaliatory):
     '''B's expected utility if A and B compromise.'''
-    return clamp(player_a.victory_probability * (1 - player_b.utility(player_a.position)) + (1 - player_a.victory_probability) * (1 - player_b.utility(player_b.position)))
+    return clamp(player_a.victory_probability * (player_b.utility(player_a.position)) + (1 - player_a.victory_probability) * (player_b.utility(player_b.position)))
 
 def outcome_7a(player_a, player_b, player_a_hawk, player_a_retaliatory, player_b_hawk, player_b_retaliatory):
     '''A's utility for status quo.'''

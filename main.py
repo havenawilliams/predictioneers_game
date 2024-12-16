@@ -1,3 +1,5 @@
+print("Initializing game libraries.")
+
 # Import necessary libraries
 import os
 import pandas as pd
@@ -150,11 +152,14 @@ else:
         simulation_results = run_game_simulation(players, g, Model, args, cutoff = True)
     else:
         simulation_results = run_game_simulation(players, g, Model, args, cutoff = False)
+    
     final_status_quo = simulation_results["final_status_quo"]
     utility_recorder = simulation_results["utility_recorder"]
     position_recorder = simulation_results["position_recorder"]
     rounds_completed = simulation_results["rounds_completed"]
     status_quo_recorder = simulation_results["status_quo_recorder"]
+
+    print(position_recorder)
 
     # Save calibration data
     save_calibration_data(csv_file, final_status_quo, args, version_number)

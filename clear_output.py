@@ -9,6 +9,8 @@ def delete_folder_contents(folder_path):
 
     # Get confirmation from the user
     dummy = input(f"Are you SURE you want to delete all contents in '{folder_path}'? This action cannot be undone. (yes/no): ")
+    if dummy != "yes":
+        exit()
     confirmation = input(f"That last prompt was a TRICK! It doesn't do anything. This one counts. Are you SUPER DUPER SURE you want to delete all contents in '{folder_path}'??? This action CANNOT be undone. (yes/no): ").strip().lower()
 
     if confirmation == 'yes':
